@@ -1,16 +1,22 @@
 {
-	"name": "NodejsStarterApp",
-	"version": "0.0.1",
-	"private": true,
-	"scripts": {
-		"start": "node app.js"
-	},
-	"dependencies": {
-		"express": "4.13.x",
-		"cfenv": "1.0.x"
-	},
-	"repository": {},
-	"engines": {
-		"node": "4.x"
-	} 
+  "name": "NodejsStarterApp",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "body-parser": "",
+    "cfenv": "1.0.x",
+    "ejs": "^2.5.2",
+    "express": "4.13.x",
+    "fs-extra": "*",
+    "personality-insights-input": "^1.0.4",
+    "twitter": "^1.4.0",
+    "watson-developer-cloud": "^2.4.6"
+  },
+  "repository": {},
+  "engines": {
+    "node": "4.x"
+  }
 }
