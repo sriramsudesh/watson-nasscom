@@ -12,8 +12,11 @@
     "express": "4.13.x",
     "fs-extra": "*",
     "personality-insights-input": "^1.0.4",
+    "personality-text-summary": "^2.1.2",
+    "personality-trait-descriptions": "^2.0.4",
+    "personality-trait-names": "^2.0.4",
     "twitter": "^1.4.0",
-    "watson-developer-cloud": "^2.4.6"
+    "watson-developer-cloud": "*"
   },
   "repository": {},
   "engines": {

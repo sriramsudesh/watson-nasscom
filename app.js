@@ -1,7 +1,7 @@
 
 
 var express = require('express');
-var fs = require('fs');
+
 var cfenv = require('cfenv');
 var ejs = require('ejs');
 var bodyParser = require('body-parser');
@@ -19,13 +19,30 @@ app.use(express.static('public'));
 
 
 var appEnv = cfenv.getAppEnv();
-var watson = require('watson-developer-cloud');
+//var watson = require('watson-developer-cloud');
 var PIInput = require('personality-insights-input');
+
+/*
 var personality_insights = watson.personality_insights({
   username: '07eab940-8bbb-4a8b-a3c6-e39e0bf7bbc5',
   password: '2JXyVO8JZz2B',
-  version: 'v2'
+  version: 'v3'
 });
+*/
+
+const personalityinsightv3 = require('watson-developer-cloud/personality-insights/v3');
+const fs = require('fs');
+
+const personality_insights = new personalityinsightv3({
+  username: "0245842b-3acc-418a-9b7c-430c46115463",
+  password: "QxWbyHRMlblI",
+  version_date: '2016-10-19'
+});
+
+ 
+
+
+
 var clientWeb = new Twitter({
   consumer_key: 'PjrA4FgQgMW3Gmro4M8y4PpzW',
   consumer_secret: '4YkPJScwV3LmPWyyFhav223GiiIJR8EXZkKFgj2FjctqKqPH2r',
@@ -86,114 +103,88 @@ function twitterAccountExists($username){
     }
 }
 
-/*
-const NodeCache = require( "node-cache" );
-const myCache = new NodeCache( { stdTTL: 100, checkperiod: 120 } );
-*/
-
-
 var Redis = require('ioredis');
 //var myCache = new Redis(15800,'redis://admin:MJAQPRNVWJIHICAO@bluemix-sandbox-dal-9-portal.3.dblayer.com');
 
-var url = 'redis://admin:NWAFWQLARTCIOGPT@bluemix-sandbox-dal-9-portal.1.dblayer.com';
-var port = 23093
+var url = "redis://admin:XFYTGUDZNFVZLKML@bluemix-sandbox-dal-9-portal.5.dblayer.com";
+var port = 23121;
 var myCache = new Redis(port, url);
+var twid = "";
+var flavour = "";
+
 
 flavours=['Splish Splash', 'Fruit Over Load', 'Mississippi Mud', 'Litchi Gold Swirl' ];
-
-
-icecreamobject = { key: 'ksudesh', flavour: 'Fruit Over Load'};
-favoriteIcecream = 'Fruit Over Load';
-
-function HasIceCreamGivenBefore(twitterID, callback) {
-  myCache.get(twitterID, function( err, icecreamobject){
-      if( !err ){
-          
-          callback(icecreamobject);
-          }
-          else
-          {
-            console.log("Throw this error !");
-           callback(error);
-          }
-    
-  });
-
-}
-
-
-function GiveIceCream(twitterID , callback) {
-  var num = Math.floor( Math.random() * flavours.length );
-  var img = flavours[ num ];
-  icecreamobject = { key: twitterID, flavour: img};
-  console.log(icecreamobject);
-  myCache.set( twitterID, icecreamobject, function( err, success ){
-      if( !err && success ){
-        console.log( "Added Ice Cream to cache" );
-        console.log(icecreamobject);
-        callback(icecreamobject);
-      }
-  });
-
-}
-
-
+var favoriteIcecream = "";
+var PersonalityTextSummaries = require('personality-text-summary');
+                     
+var textSummary = "";
 
 app.post('/showtweets', function(req, res) {
-    console.log("1.........." + req.body.userid);
+    //console.log("1.........." + req.body.userid);
     var params = req.body.userid;
-    HasIceCreamGivenBefore(params,function(response) {
-      if(response === undefined) { 
-        console.log('Trying to give a new ice cream');
-          GiveIceCream(params, function(response) {
-           
-              icecreamobject = response;
-              console.log("New flavour return to the new user " + icecreamobject.flavour);
-              favoriteIcecream = icecreamobject.flavour
-          });
+    
+    myCache.get(params, function (err, result) {
+      if(result != null) {
+         favoriteIcecream = result;
+         //console.log("Flavour:" + result);
+         //console.log("Flavour:" + flavour);
+         //console.log("FavouriteIcecream" +favoriteIcecream);
       }
       else {
-        console.log("It reaches when response is null" + response);
-          icecreamobject  = response;
-           console.log("Flavour return to the old user " + icecreamobject.flavour);
-           favoriteIcecream = icecreamobject.flavour;
-          
-      }
-      });
-
-      
-        
-        prepareTweets(params, function(mytweets) {
+          //console.log('Give a new ice cream');
+          var num = Math.floor( Math.random() * flavours.length );
+          flavour = flavours[ num ];
+          favoriteIcecream = flavour;
+          myCache.set(params,flavour, function( err, success ){
+            if( !err && success ){
+            //console.log( "Added Ice Cream to cache" );
+            //console.log("---"+ params + "Flavour" + flavour);
+            }
+          });
+        }
+    });
+    
+    prepareTweets(params, function(mytweets) {
                   if(mytweets.length > 300) { 
                       var tweetprepareparam = {  text: mytweets };
-                  
-                 personality_insights.profile(tweetprepareparam, function(error, response) {
+                      personality_insights.profile(tweetprepareparam, function(error, response) {
                       if (error) {
                           console.log(error);
                       }
                       myAnalysisJson = JSON.stringify(response, null, 2);
-                     
-                      res.render('sunburst', {
-                          analyze: favoriteIcecream
-                      });
+
                       fs.writeFile('./public/personality.json', myAnalysisJson, function(err) {
-                          if (err) return console.log(err);
-                          console.log('Writtent the file');
+                          if (err) return 
+                          //console.log('File written to filesystem');
+                          var myV3EnPersonalityProfile = require('./public/personality.json');
+                          var v3EnglishTextSummaries = new PersonalityTextSummaries({ locale: 'en', version: 'v3' });
+                          textSummary  = v3EnglishTextSummaries.getSummary(myV3EnPersonalityProfile);
+                          //console.log(textSummary);
                       });
 
+       
+
+                      res.render('sunburst', {
+                          analyze: favoriteIcecream , 
+                          textSummary : textSummary
+                          
+                      });
+
+
+                      
                   });
               }
               else {
-
                 res.render('index',{analyze : ' Not enough tweets for analysis. Would you like to try with a celebrity twitter handle ?'});
               }
-
         });
-
-  });
+    });
 
 // start server on the specified port and binding host
 app.listen(appEnv.port, '0.0.0.0', function() {
   // print a message when the server starts listening
   console.log("server starting on " + appEnv.url);
 });
+
+
+

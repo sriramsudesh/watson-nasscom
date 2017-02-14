@@ -5,13 +5,17 @@
    <head>
       <meta http-equiv="Content-Type" content="text/html;charset=ISO-8859-1">
       <title>Personality Insights Sunburst Chart</title>
-      <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.14/d3.min.js"></script>
-      <script src="https://rawgit.com/ibm-silvergate/personality-sunburst-chart/master/bin/personality-sunburst-chart.standalone.js"></script>
-      <script src="https://rawgit.com/ibm-silvergate/personality-text-summary/master/bin/personality-text-summary.standalone.js"></script>
-      <script src="https://rawgit.com/personality-insights/behaviors/master/dist/personality-behaviors.js"></script>
-      <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet" />
-      <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+      
+  <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.14/d3.min.js"></script>
+    <script src="https://rawgit.com/jeanbmar/sunburst-chart/master/personality-sunburst-chart.standalone.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+
+    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="https://rawgit.com/ibm-silvergate/personality-text-summary/master/bin/personality-text-summary.standalone.js"></script>
+    
+
+
       <style>
          #profile pre {
          max-height: 400px;
@@ -36,10 +40,9 @@
          
          <div class="row">
             <div class="col-sm-6 col-xs-12">
-               <h3>Profile Summary</h3>
-               <div id="textSummary"></div>
-            </div>
-
+              <h2>Personality Summary</h2>
+              <div> <middle> <p><h4> <%=textSummary%> <h4> <p></middle> </div>
+         </div>
 
             <div class="col-sm-6 col-xs-12">
               <h2>Personality Sunburst Chart</h2>
@@ -70,62 +73,20 @@
   </div>
 </div>
 
-
-
-
-      <div class="container">
-         
-         <p class="lead"> <h2> Discovery using Personality Behavior </h2> </p>
-         <div class="row">
-            
-            <div class="col-sm-6 col-xs-12">
-               <h3>Behavior Cards</h3>
-               <div id="behaviors"></div>
-            </div>
-
-             <div class="col-sm-6 col-xs-12">
-               <h3>Component Output</h3>
-               <div id="output"></div>
-            </div>
-            
-         </div>
-      </div>
       <script>
-         $.getJSON('personality.json', '', function ( profile ) {
+         
+         $.getJSON('personality.json', '', function ( profile ) 
+         {
            $('#profile').append('<pre>' + JSON.stringify(profile, null, 2) + '</pre>');
-           var chart = new PersonalitySunburstChart('sunburstChart');
-           chart.show(profile, 'profile_photo.jpg');
+           var chart = new PersonalitySunburstChart(document.getElementById('sunburstChart'));
+            chart.show(profile, '/images/profile_photo.jpg');
          });
-         
-         function buildSummaryHtml(summary) {
-           return '<p>' + summary.split('\n').join('</p><p>') + '</p>';
-         }
-         
-         $.getJSON('personality.json', '', function ( profile ) {
-           var summary = new TextSummary('en'),
-               summaryText = summary.getSummary(profile);
-           $('#textSummary').append(buildSummaryHtml(summaryText));
-         });
-    
-      function pre(data) {
-        return '<pre>' + JSON.stringify(data, null, '  ') + '</pre>';
-      }
-     
-      $.getJSON('personality.json', '', function ( profile ) {
-        var personalityBehaviors = new PersonalityBehaviors('en'),
-            behaviors = personalityBehaviors.behaviors(profile);
-        behaviors.forEach(function (b) {
-          $('#behaviors').append([
-            '<div class="well">',
-              '<p> A <strong>', b.name, '</strong> is likely to <strong>', b.verb, '</strong>.</p>',
-              '<p> <strong>Who is likely to manifest this behavior?</strong><br/>', b.description, '</p>',
-            '</div>'
-          ].join(''));
-        });
-        $('#output').append(pre(behaviors))
-        $('#profile').append(pre(profile));
-      });
-      
       </script>
+
+    
+      
+ 
+
+
    </body>
 </html>
