@@ -6,5 +6,4 @@ applications:
   name: watson-nasscom
   host: watson-nasscom
   disk_quota: 1024M
-  services:
-  - Compose for Redis-a2
+  
