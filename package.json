@@ -6,17 +6,18 @@
     "start": "node app.js"
   },
   "dependencies": {
-    "body-parser": "",
-    "cfenv": "1.0.x",
-    "ejs": "^2.5.2",
-    "express": "4.13.x",
+    "body-parser": "^1.16.1",
+    "cfenv": "^1.0.4",
+    "ejs": "^2.5.5",
+    "express": "^4.13.4",
     "fs-extra": "*",
+    "ioredis": "^2.5.0",
     "personality-insights-input": "^1.0.4",
     "personality-text-summary": "^2.1.2",
     "personality-trait-descriptions": "^2.0.4",
     "personality-trait-names": "^2.0.4",
-    "twitter": "^1.4.0",
-    "watson-developer-cloud": "*"
+    "twitter": "^1.7.0",
+    "watson-developer-cloud": "^2.18.0"
   },
   "repository": {},
   "engines": {
