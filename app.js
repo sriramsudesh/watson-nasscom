@@ -31,17 +31,13 @@ var personality_insights = watson.personality_insights({
 */
 
 const personalityinsightv3 = require('watson-developer-cloud/personality-insights/v3');
-const fs = require('fs');
+var fs = require('fs');
 
-const personality_insights = new personalityinsightv3({
+var personality_insights = new personalityinsightv3({
   username: "0245842b-3acc-418a-9b7c-430c46115463",
   password: "QxWbyHRMlblI",
   version_date: '2016-10-19'
 });
-
- 
-
-
 
 var clientWeb = new Twitter({
   consumer_key: 'PjrA4FgQgMW3Gmro4M8y4PpzW',
@@ -152,13 +148,20 @@ app.post('/showtweets', function(req, res) {
                           console.log(error);
                       }
                       myAnalysisJson = JSON.stringify(response, null, 2);
+                      //console.log("Jason file " + myAnalysisJson);
+                      //var myV3EnPersonalityProfile = require(myAnalysisJson);
+                      var v3EnglishTextSummaries = new PersonalityTextSummaries({ locale: 'en', version: 'v3' });
+                      textSummary  = v3EnglishTextSummaries.getSummary(response);
+                      //console.log(textSummary);
+                          
+
 
                       fs.writeFile('./public/personality.json', myAnalysisJson, function(err) {
                           if (err) return 
                           //console.log('File written to filesystem');
-                          var myV3EnPersonalityProfile = require('./public/personality.json');
-                          var v3EnglishTextSummaries = new PersonalityTextSummaries({ locale: 'en', version: 'v3' });
-                          textSummary  = v3EnglishTextSummaries.getSummary(myV3EnPersonalityProfile);
+                          //var myV3EnPersonalityProfile = require('./public/personality.json');
+                          //var v3EnglishTextSummaries = new PersonalityTextSummaries({ locale: 'en', version: 'v3' });
+                          //textSummary  = v3EnglishTextSummaries.getSummary(myV3EnPersonalityProfile);
                           //console.log(textSummary);
                       });
 
